@@ -1,0 +1,28 @@
+{
+    "name": "brs-software/brs-zf-base",
+    "homepage": "https://github.com/brssoftware/BrsZfBase",
+    "description": "Common classes for BrsZf modules",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf2",
+        "brs"
+    ],
+    "require": {
+        "php": ">=5.4",
+        "zendframework/zendframework": "2.*",
+        "zf-commons/zfc-base": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "BrsZfBase\\": "src/",
+            "BrsZfBaseTest\\": "tests/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    }
+}
