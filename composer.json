@@ -11,7 +11,8 @@
     "require": {
         "php": ">=5.4",
         "zendframework/zendframework": "2.*",
-        "zf-commons/zfc-base": "dev-master"
+        "zf-commons/zfc-base": "dev-master",
+        "alcaeus/liquibase": "2.*"
     },
     "require-dev": {
         "phpunit/PHPUnit": "3.7.*"
