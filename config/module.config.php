@@ -51,11 +51,11 @@ return array(
     //         'zfcuser' => 'ZfcUser\Controller\UserController',
     //     ),
     // ),
-    // 'controller_plugins' => array(
-    //     'invokables' => array(
-    //         'zfcuserauthentication' => 'ZfcUser\Controller\Plugin\ZfcUserAuthentication',
-    //     ),
-    // ),
+    'controller_plugins' => array(
+        'invokables' => array(
+            'jqGrid' => 'BrsZfBase\Controller\Plugin\JqGrid',
+        ),
+    ),
     // 'service_manager' => array(
     //     'aliases' => array(
     //         'zfcuser_zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
