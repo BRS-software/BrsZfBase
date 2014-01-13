@@ -14,10 +14,10 @@ return array(
                 // ),
                 'BrsZfBase.Deploy' => array(
                     'options' => array(
-                        'route'    => 'deploy [<module>]',
-                        'constraints' => array(
-                            'table' => '/^[a-z0-9_]{1,}$/'
-                        ),
+                        'route'    => 'deploy [<action>] [--module=]',
+                        // 'constraints' => array(
+                        //     'table' => '/^[a-z0-9_]{1,}$/'
+                        // ),
                         'defaults' => array(
                             'controller' => 'BrsZfBase\Controller\Deploy',
                             'action'     => 'deploy',
