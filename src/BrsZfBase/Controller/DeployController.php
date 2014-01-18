@@ -24,33 +24,43 @@ class DeployController extends AbstractActionController
 
     public function updbAction()
     {
-        # code...
-        // dbgd('updb');
+        $config = $this->getServiceLocator()->get('config')['db'];
+        preg_match('/^(\w+):(.*)/', $config['dsn'], $m);
+        $config['driver'] = $m[1];
+        foreach (explode(';', $m[2]) as $v) {
+            $tmp = explode('=', $v);
+            $config[$tmp[0]] = $tmp[1];
+        }
+        $config['port'] = 5432;
+        $config['logLevel'] = 'severe'; // Execution log level (debug, info, warning, severe, off)
 
-    }
+        if (PHP_OS === 'Windows') {
+            $settings = '--driver=org.postgresql.Driver --logLevel=%s --url="jdbc:postgresql://%s:%s/%s" --changeLogFile="%s" --username="%s" --password="%s" --contexts=%s';
+            $cmd = '.\vendor\alcaeus\liquibase\liquibase.bat';
+        } else {
+            $settings = "--driver=org.postgresql.Driver --logLevel=%s --url=\"jdbc:postgresql://%s:%s/%s\" --changeLogFile=\"%s\" --username='%s' --password='%s' --contexts=%s";
+            $cmd = './vendor/alcaeus/liquibase/liquibase';
+        }
 
-    protected function runLiquibase($changelogfile)
-    {
-        $settings = (OS == 'unix')
-            ? "--driver=org.postgresql.Driver --logLevel=fine --url=\"jdbc:postgresql://%s:%s/%s\" --changeLogFile=\"%s\" --username='%s' --password='%s' --contexts=%s"
-            : "--driver=org.postgresql.Driver --logLevel=fine --url=\"jdbc:postgresql://%s:%s/%s\" --changeLogFile=\"%s\" --username=\"%s\" --password=\"%s\" --contexts=%s";
+        $changelogfile = $this->aggregateLiquid('data/liquibase/liquibase-all-modules.xml');
+        $params = sprintf($settings, $config['logLevel'], $config['host'], $config['port'], $config['dbname'], $changelogfile, $config['username'], $config['password'], 'webapp');
 
-        $cmd = (OS == 'unix') ? './library/liquibase/liquibase' : '.\library\liquibase\liquibase.bat';
-
-        $params = sprintf($settings, $this->host, $this->port, $this->dbName, $changelogfile, $this->username, $this->password, $this->context);
-
+        // putenv(sprintf('LIQUIBASE_HOME=%s', getcwd()));
         $cmd = sprintf('%s %s %s', $cmd, $params, 'update');
-
-        Clix::message('Executing: %s', $cmd);
-        Clix::exec($cmd);
+        printf("Executing: %s\n", $cmd);
+        passthru($cmd);
     }
 
-    protected function aggregateLiquid()
+    protected function aggregateLiquid($outputFilename)
     {
-        $outputFilename = $this->params('output');
-        $modules        = $this->moduleManager->getLoadedModules();
+        $dir = dirname($outputFilename);
+        if (! is_dir($dir)) {
+            mkdir_fix($dir, 0777);
+        }
+        // $outputFilename = $this->params('output');
+        $modules = $this->getServiceLocator()->get('moduleManager')->getLoadedModules();
 
-        $writer = new XMLWriter();
+        $writer = new \XMLWriter();
         $writer->openURI($outputFilename);
         $writer->setIndent(true);
         $writer->setIndentString('    ');
@@ -80,7 +90,6 @@ class DeployController extends AbstractActionController
 
         $writer->endElement();
         $writer->endDocument();
-
-        return "Aggregated change set generated.\n";
+        return $outputFilename;
     }
 }

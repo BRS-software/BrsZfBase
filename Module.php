@@ -19,6 +19,7 @@ BRS ZF BASE
 usage:
 install <module>            - install module
 deploy [<module>]           - deploy module
+deploy updb                 - deploy db changes
 EOF;
     }
 
