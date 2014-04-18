@@ -1,15 +1,28 @@
 <?php
 
-namespace BrsZfBase\Controller;
+namespace BrsZfBase\Controller\Console;
 
 use Zend\ModuleManager\ModuleManager;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Console\Prompt\Line;
 use Zend\Console\Prompt\Confirm;
 use Zend\Console\Prompt\Select;
+use BrsZfBase\Console\Controller\AbstractActionController;
 
 class DeployController extends AbstractActionController
 {
+    public static function getConsoleOptions()
+    {
+        return [
+            'desc' => 'Deploy of application in current environment',
+            'commands' => [
+                'updb' => [
+                    'desc' => 'Updates local database using liquibase changelog files',
+                    'options' => [
+                    ]
+                ],
+            ]
+        ];
+    }
     // public function __construct(ModuleManager $moduleManager)
     // {
     //     dbgd($moduleManager);# code...
@@ -22,7 +35,7 @@ class DeployController extends AbstractActionController
         // dbgd($this->params('module'), 'deploy');
     }
 
-    public function updbAction()
+    protected function updb()
     {
         $config = $this->getServiceLocator()->get('config')['db'];
         preg_match('/^(\w+):(.*)/', $config['dsn'], $m);
@@ -47,7 +60,7 @@ class DeployController extends AbstractActionController
 
         // putenv(sprintf('LIQUIBASE_HOME=%s', getcwd()));
         $cmd = sprintf('%s %s %s', $cmd, $params, 'update');
-        printf("Executing: %s\n", $cmd);
+        $this->writeLogLine(sprintf("Executing: %s", $cmd));
         passthru($cmd);
     }
 

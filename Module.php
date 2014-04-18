@@ -1,26 +1,30 @@
 <?php
+
+/**
+ * (c) BRS software - Tomasz Borys <t.borys@brs-software.pl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace BrsZfBase;
 
-use ZfcBase\Module\AbstractModule;
-
-use Zend\ModuleManager\Feature\ConsoleBannerProviderInterface;
+use BrsZfBase\Console\Module as ConsoleModule;
+use Zend\Console\Adapter\AdapterInterface as Console;
+use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Mvc\ApplicationInterface;
-use Zend\Console\Adapter\AdapterInterface as Console;
+use ZfcBase\Module\AbstractModule;
 
-class Module extends AbstractModule implements ConsoleBannerProviderInterface
+/**
+ * @author Tomasz Borys <t.borys@brs-software.pl>
+ * @version 1.0 2012-12-07
+ */
+class Module extends AbstractModule implements ConsoleUsageProviderInterface
 {
-    public function getConsoleBanner(Console $console)
+    public function getConsoleUsage(Console $console)
     {
-        return <<<EOF
-==-------==
-BRS ZF BASE
-==-------==
-usage:
-install <module>            - install module
-deploy [<module>]           - deploy module
-deploy updb                 - deploy db changes
-EOF;
+        return (new ConsoleModule($this))->getConsoleUsage();
     }
 
     public function getDir()
@@ -33,39 +37,21 @@ EOF;
         return 'BrsZfBase';
     }
 
-    // public function onbootstrap() {
-    //     debuge(new \Brs\Zf\Base\Module\AbstractModule);
-    // }
+    public function bootstrap(ModuleManager $moduleManager, ApplicationInterface $app)
+    {
+        $sm = $app->getServiceManager();
+
+        // replace default zf console factory
+        $allowOverride = $sm->getAllowOverride();
+        $sm->setAllowOverride(true);
+        $sm->setFactory('console', new \Brs\Zf\Mvc\Service\ConsoleAdapterFactory('\Brs\Zf\Console\Adapter\DevNull', '\Brs\Zf\Console\Adapter\Posix'));
+        $sm->setAllowOverride($allowOverride);
+    }
 
     public function getAutoloaderConfig()
     {
         return array(
-            // 'Zend\Loader\ClassMapAutoloader' => array(
-            //     $this->getDir() . '/autoload_classmap.php',
-            // ),
-            // 'Zend\Loader\StandardAutoloader' => array(
-            //     'namespaces' => array(
-            //         $this->getNamespace() => $this->getDir() . '/src/' . str_replace('\\', '/', $this->getNamespace()),
-            //     ),
-            // ),
         );
 
     }
-    // public function getServiceConfig()
-    // {
-    //     return array(
-    //         'factories' => array(
-    //             'brssloth_module_options' => function ($sm) {
-    //                 $config = $sm->get('Config');
-    //                 return new Options\ModuleOptions(isset($config['brssloth']) ? $config['brssloth'] : array());
-    //             },
-    //             // 'db-adapter' => function($sm) {
-    //             //     $config = $sm->get('config');
-    //             //     $config = $config['db'];
-    //             //     $dbAdapter = new DbAdapter($config);
-    //             //     return $dbAdapter;
-    //             // },
-    //         ),
-    //     );
-    // }
 }

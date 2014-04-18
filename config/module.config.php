@@ -1,64 +1,47 @@
 <?php
-return array(
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-                // 'BrsZfBase_' => array(
-                //     'options' => array(
-                //         'route'    => 'sloth definition init [--skip-existing|-s]',
-                //         'defaults' => array(
-                //             'controller' => 'BrsZfSloth\Controller\Generator',
-                //             'action'     => 'initdb',
-                //         ),
-                //     ),
-                // ),
-                'BrsZfBase.Deploy' => array(
-                    'options' => array(
-                        'route'    => 'deploy [<action>] [--module=]',
-                        // 'constraints' => array(
-                        //     'table' => '/^[a-z0-9_]{1,}$/'
-                        // ),
-                        'defaults' => array(
-                            'controller' => 'BrsZfBase\Controller\Deploy',
-                            'action'     => 'deploy',
-                        ),
-                    ),
-                ),
-                // 'exception' => array(
-                //     'options' => array(
-                //         'route'    => 'exception',
-                //         'defaults' => array(
-                //             'controller' => 'Application\Controller\Index',
-                //             'action'     => 'exception',
-                //         ),
-                //     ),
-                // ),
-            ),
-        ),
-    ),
-    'controllers' => array(
-        'invokables' => array(
-            'BrsZfBase\Controller\Deploy' => 'BrsZfBase\Controller\DeployController',
-        ),
-    ),
-    // 'view_manager' => array(
-    //     'template_path_stack' => array(
+
+return [
+    'console' => [
+        'router' => [
+            'routes' => array_merge([
+                // route to generateing other routes first time
+                'base-update-console-routes' => [
+                    'options' => [
+                        'route'    => 'update console routes',
+                        'defaults' => [
+                            'controller' => 'BrsZfBase\Controller\Console\ModulesController',
+                            'action'     => 'index',
+                            'command'    => 'update console routes',
+                        ],
+                    ],
+                ]
+            ], BrsZfBase\Console\RoutesGenerator::readRoutes())
+        ],
+    ],
+    'controllers' => [
+        'invokables' => array_merge([
+            'BrsZfBase\Controller\Console\ModulesController' => 'BrsZfBase\Controller\Console\ModulesController',
+        ], BrsZfBase\Console\RoutesGenerator::readControllersInvokables()),
+    ],
+    // 'view_manager' => [
+    //     'template_path_stack' => [
     //         'zfcuser' => __DIR__ . '/../view',
-    //     ),
-    // ),
-    // 'controllers' => array(
-    //     'invokables' => array(
+    //     ],
+    // ],
+    // 'controllers' => [
+    //     'invokables' => [
     //         'zfcuser' => 'ZfcUser\Controller\UserController',
-    //     ),
-    // ),
-    'controller_plugins' => array(
-        'invokables' => array(
+    //     ],
+    // ],
+    'controller_plugins' => [
+        'invokables' => [
             'jqGrid' => 'BrsZfBase\Controller\Plugin\JqGrid',
-        ),
-    ),
-    // 'service_manager' => array(
-    //     'aliases' => array(
-    //         'zfcuser_zend_db_adapter' => 'Zend\Db\Adapter\Adapter',
-    //     ),
-    // )
-);
+        ],
+    ],
+    'service_manager' => [
+        // 'aliases' => [
+        // ],
+        // 'factories' => [
+        // ]
+    ],
+];
