@@ -15,6 +15,7 @@ use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Console\ColorInterface as Color;
 use BrsZfBase\Exception;
+use Brs\Stdlib\Console\CmdExec;
 
 
 /**
@@ -51,10 +52,17 @@ abstract class AbstractActionController extends ZfAbstractActionController
                 $commandsList[$opt] = sprintf('%s  %s', str_pad($cmd, $longestAction, '   ', STR_PAD_RIGHT), isset($data['desc']) ? $data['desc'] : '');
                 $opt = chr(ord($opt) + 1);
             }
+
             if (! $command = $this->params('command')) {
                 $command = $commands[(new Prompt\Select('Select an action to run', $commandsList))->show()];
             }
             $commandData = $opts[$command];
+
+            // replace command-name to commandName
+            $command = preg_replace_callback('/(-|\s[a-z])/', function($letters) {
+                $letter = substr(array_shift($letters), 1, 1);
+                return ucfirst($letter);
+            }, $command);
 
             $method = isset($commandData['method']) ? $commandData['method'] : $command;
             $args = isset($commandData['args']) ? $commandData['args'] : [];
@@ -65,5 +73,12 @@ abstract class AbstractActionController extends ZfAbstractActionController
             }
             return call_user_func_array([$this, $method], $args);
         }
+    }
+
+    protected function exec($cmd)
+    {
+        $c = new CmdExec;
+        call_user_func_array([$c, 'setCmd'], func_get_args());
+        return $c->execute();
     }
 }
