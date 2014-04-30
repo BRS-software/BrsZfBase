@@ -59,6 +59,16 @@ class RoutesGenerator
                 if (empty($commands = $controller->getCommands())) {
                     return;
                 }
+
+                // route to controller - action by user selected from list
+                $routeToController = $controller->getRoute();
+                $config[$routeToController]['options'] = [
+                    'route' => $routeToController,
+                    'defaults' => [
+                        'controller' => $controller->getControllerClass(),
+                        'action' => 'index',
+                    ],
+                ];
                 array_walk($commands, function ($command) use (&$config) {
                     $route = $command->getRoute();
                     $config[$route]['options'] = [

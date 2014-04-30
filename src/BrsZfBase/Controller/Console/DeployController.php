@@ -60,7 +60,7 @@ class DeployController extends AbstractActionController
 
         // putenv(sprintf('LIQUIBASE_HOME=%s', getcwd()));
         $cmd = sprintf('%s %s %s', $cmd, $params, 'update');
-        $this->writeLogLine(sprintf("Executing: %s", $cmd));
+        $this->console->writeLogLine(sprintf("Executing: %s", $cmd));
         passthru($cmd);
     }
 
