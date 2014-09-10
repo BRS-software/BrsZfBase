@@ -32,6 +32,7 @@ abstract class AbstractSelectModel extends AbstractPlugin
             // mandatory config
             // 'repository' => 'module.model.repository',
             // 'list_select_fn' => function ($select, $conv, $options) {},
+            // 'get_model_fn' => function ($repository, $options) {},
 
             // optional config
             'invalid_model_id_message' => 'Invalid model ID',
@@ -62,6 +63,8 @@ abstract class AbstractSelectModel extends AbstractPlugin
         return $this->config;
     }
 
+
+
     public function __invoke(array $options = [])
     {
         $options = __::defaults($options, [
@@ -71,6 +74,19 @@ abstract class AbstractSelectModel extends AbstractPlugin
         $sm = $this->getController()->getServiceLocator();
         $console = $sm->get('console');
         $repo = $sm->get($this->getConfig('repository'));
+
+        if ($this->hasConfig('get_model_fn')) {
+            $getModelFn = $this->getConfig('get_model_fn');
+            try {
+                $model = $getModelFn($repo, $options);
+
+            } catch (NotFoundException $e) {
+                $console->error($e->getMessage());
+            }
+            if ($model) {
+                return $model;
+            }
+        }
 
         if ($options['id']) {
             try {
