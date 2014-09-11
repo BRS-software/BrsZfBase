@@ -33,6 +33,20 @@ class DeployController extends AbstractActionController
         // dbgod($this->getEvent()->getApplication()->getServiceManager()->get('moduleManager'));
         // dbgod($this->get('moduleManager'));
         // dbgd($this->params('module'), 'deploy');
+
+
+        /*
+            procedura do zrobienia
+            - kontrola zmiany nr wersji - powinno się to robić automatycznie, a nie ręcznie jak jest teraz
+            - przyblokuj stronę "przerwa techniczna"
+            - git pull
+            - ./composer update
+            - app.php deploy updb
+            - app.php update console routes
+            - app.php css compile
+            - reset cache
+            - odblokuj stronę
+        */
     }
 
     protected function updb()
@@ -68,7 +82,7 @@ class DeployController extends AbstractActionController
     {
         $dir = dirname($outputFilename);
         if (! is_dir($dir)) {
-            mkdir_fix($dir, 0777);
+            mkdir_fix($dir);
         }
         // $outputFilename = $this->params('output');
         $modules = $this->getServiceLocator()->get('moduleManager')->getLoadedModules();
