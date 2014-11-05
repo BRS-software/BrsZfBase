@@ -23,25 +23,18 @@ return [
             'BrsZfBase\Controller\Console\ModulesController' => 'BrsZfBase\Controller\Console\ModulesController',
         ], BrsZfBase\Console\RoutesGenerator::readControllersInvokables()),
     ],
-    // 'view_manager' => [
-    //     'template_path_stack' => [
-    //         'zfcuser' => __DIR__ . '/../view',
-    //     ],
-    // ],
-    // 'controllers' => [
-    //     'invokables' => [
-    //         'zfcuser' => 'ZfcUser\Controller\UserController',
-    //     ],
-    // ],
+    'view_helpers' => array(
+        'factories' => array(
+            'getService' => function($sm) {
+                $h = new \BrsZfBase\ViewHelper\GetService;
+                $h->setServiceManager($sm->getServiceLocator());
+                return $h;
+            },
+        ),
+    ),
     'controller_plugins' => [
         'invokables' => [
             'jqGrid' => 'BrsZfBase\Controller\Plugin\JqGrid',
         ],
-    ],
-    'service_manager' => [
-        // 'aliases' => [
-        // ],
-        // 'factories' => [
-        // ]
     ],
 ];
