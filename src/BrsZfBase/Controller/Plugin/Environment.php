@@ -66,6 +66,7 @@ class Environment extends AbstractPlugin
 
     public function getEnv()
     {
+        $this();
         return $this->env;
     }
 
