@@ -30,6 +30,11 @@ return [
                 $h->setServiceManager($sm->getServiceLocator());
                 return $h;
             },
+            'bust' => function($sm) {
+                $h = new \BrsZfBase\ViewHelper\Bust;
+                $h->setServiceManager($sm->getServiceLocator());
+                return $h;
+            },
         ),
     ),
     'controller_plugins' => [
