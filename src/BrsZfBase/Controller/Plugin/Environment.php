@@ -45,16 +45,6 @@ class Environment extends AbstractPlugin
 
     public function __invoke(Closure $isProductionFn = null, Closure $notProductionFn = null)
     {
-        if (null === $this->env) {
-            $config = $this->getController()->getServiceLocator()->get('config');
-            if (! array_key_exists('env', $config)) {
-                throw new Exception\RuntimeException('Environment not defined. Add "env" key to your config file.');
-            } elseif( ! in_array($config['env'], self::$environments)) {
-                throw new Exception\RuntimeException('Environment invalid value. Value must be one from values: ' . implode(', ', self::$environments));
-            }
-            $this->env = $config['env'];
-        }
-
         if ($isProductionFn) {
             $this->isProduction($isProductionFn);
         }
@@ -66,7 +56,15 @@ class Environment extends AbstractPlugin
 
     public function getEnv()
     {
-        $this();
+        if (null === $this->env) {
+            $config = $this->getController()->getServiceLocator()->get('config');
+            if (! array_key_exists('env', $config)) {
+                throw new Exception\RuntimeException('Environment not defined. Add "env" key to your config file.');
+            } elseif( ! in_array($config['env'], self::$environments)) {
+                throw new Exception\RuntimeException('Environment invalid value. Value must be one from values: ' . implode(', ', self::$environments));
+            }
+            $this->env = $config['env'];
+        }
         return $this->env;
     }
 
