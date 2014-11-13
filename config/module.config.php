@@ -35,6 +35,7 @@ return [
     'controller_plugins' => [
         'invokables' => [
             'jqGrid' => 'BrsZfBase\Controller\Plugin\JqGrid',
+            'environment' => 'BrsZfBase\Controller\Plugin\Environment',
         ],
     ],
 ];
