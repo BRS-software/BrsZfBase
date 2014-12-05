@@ -40,7 +40,14 @@ return [
     'controller_plugins' => [
         'invokables' => [
             'jqGrid' => 'BrsZfBase\Controller\Plugin\JqGrid',
-            'environment' => 'BrsZfBase\Controller\Plugin\Environment',
+            // 'environment' => 'BrsZfBase\Controller\Plugin\Environment',
+        ],
+        'factories' => [
+            'environment' => function ($sm) {
+                $p = new BrsZfBase\Controller\Plugin\Environment;
+                $p->setConfig($sm->getServiceLocator()->get('config'));
+                return $p;
+            }
         ],
     ],
 ];

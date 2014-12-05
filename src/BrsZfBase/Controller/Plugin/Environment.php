@@ -13,7 +13,6 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Closure;
 use BrsZfBase\Exception;
 
-
 /**
  * @author Tomasz Borys <t.borys@brs-software.pl>
  * @version 1.0 2014-11-13
@@ -27,6 +26,7 @@ class Environment extends AbstractPlugin
     public static $environments = [self::PRODUCTION, self::TESTING, self::DEVELOPMENT];
 
     protected $env;
+    protected $config;
 
     public function __get($prop)
     {
@@ -54,10 +54,16 @@ class Environment extends AbstractPlugin
         return $this;
     }
 
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+        return;
+    }
+
     public function getEnv()
     {
         if (null === $this->env) {
-            $config = $this->getController()->getServiceLocator()->get('config');
+            $config = $this->config;
             if (! array_key_exists('env', $config)) {
                 throw new Exception\RuntimeException('Environment not defined. Add "env" key to your config file.');
             } elseif( ! in_array($config['env'], self::$environments)) {
