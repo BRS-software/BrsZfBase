@@ -12,6 +12,7 @@ namespace BrsZfBase\Module;
 use ZfcBase\Module\AbstractModule as Module;
 use Zend\ModuleManager\ModuleManager;
 use Zend\Cache\StorageFactory;
+use Zend\EventManager\EventInterface as Event;
 
 /**
  * @author Tomasz Borys <t.borys@brs-software.pl>
@@ -23,13 +24,24 @@ abstract class AbstractModule extends Module
 
     public function init(ModuleManager $moduleManager)
     {
+        // Remember to keep the init() method as lightweight as possible
+        $events = $moduleManager->getEventManager();
+        $events->attach('loadModules.post', function (Event $e) {
+            $this->serviceManager = $e->getParam('ServiceManager'); // short way to service manager
+            $this->setMergedConfig($this->serviceManager->get('config'));
+            $this->modulesLoaded($e);
+        });
+
         $sharedManager = $moduleManager->getEventManager()->getSharedManager();
         $sharedManager->attach('Zend\Mvc\Application', 'bootstrap', function($e) use ($moduleManager) {
             $app = $e->getParam('application');
-            $this->serviceManager = $app->getServiceManager();
-            $this->setMergedConfig($app->getConfig());
+            // $this->serviceManager = $app->getServiceManager();
             $this->bootstrap($moduleManager, $app);
         });
+    }
+
+    public function modulesLoaded(Event $e)
+    {
     }
 
     public function getAutoloaderConfig()
