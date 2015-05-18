@@ -40,6 +40,7 @@ return [
     'controller_plugins' => [
         'invokables' => [
             'jqGrid' => 'BrsZfBase\Controller\Plugin\JqGrid',
+            'getJsonPost' => 'BrsZfBase\Controller\Plugin\GetJsonPost',
             // 'environment' => 'BrsZfBase\Controller\Plugin\Environment',
         ],
         'factories' => [
