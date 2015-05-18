@@ -21,17 +21,6 @@ class GetJsonPost extends AbstractPlugin
     protected $data;
     protected $isContentTypeJson;
 
-    public function __construct()
-    {
-        $input = file_get_contents('php://input');
-        $this->data = json_decode($input, true);
-        if ($input && null === $this->data) {
-            throw new Exception\RuntimeException(
-                sprintf('Invalid JSON in POST request: %s', $input)
-            );
-        }
-    }
-
     public function __invoke(/*$param = null, $default = null*/)
     {
         if (func_num_args() === 0) {
@@ -48,13 +37,28 @@ class GetJsonPost extends AbstractPlugin
         if (! $this->isContentTypeJson()) {
             throw new Exception\RuntimeException('Invalid HTTP header. Expected: Content-Type: application/json');
         }
+        $data = $this->getData();
         if ($param === null) {
-            return $this->data;
-        } elseif (isset($this->data[$param])) {
-            return $this->data[$param];
+            return $data;
+        } elseif (isset($data[$param])) {
+            return $data[$param];
         } else {
             return $default;
         }
+    }
+
+    public function getData()
+    {
+        if (null === $this->data) {
+            $input = file_get_contents('php://input');
+            $this->data = json_decode($input, true);
+            if ($input && null === $this->data) {
+                throw new Exception\RuntimeException(
+                    sprintf('Invalid JSON in POST request: %s', $input)
+                );
+            }
+        }
+        return $this->data;
     }
 
     public function isContentTypeJson()
