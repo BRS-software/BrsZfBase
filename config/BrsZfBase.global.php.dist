@@ -1,0 +1,32 @@
+<?php
+/**
+ * BrsZfUser Configuration
+ *
+ * If you have a ./config/autoload/ directory set up for your project, you can
+ * drop this config file in it and change the values as you wish.
+ */
+$configuration['lang_service'] = [
+
+    /**
+     * Default language for page. In example set by domain: en.example.com
+     * Value can be an string or Closure.
+     */
+    // 'default_lang' => function ($sm) {},
+
+    /**
+     * Lang selected by user. In example set by user via routing: en.example.com/fr
+     * Value can be an string or Closure.
+     */
+    // 'lang' => function ($sm) {},
+];
+
+
+/**
+ * You do not need to edit below this line
+ */
+return [
+    'BrsZfBase' => [
+        'options' => $configuration,
+    ]
+];
+
