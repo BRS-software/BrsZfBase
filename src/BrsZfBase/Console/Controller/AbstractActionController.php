@@ -35,7 +35,7 @@ abstract class AbstractActionController extends ZfAbstractActionController
             throw new Exception\RuntimeException('You can only use this action from a console!');
         }
 
-        $opts = static::getConsoleOptions()['commands'];
+        $opts = array_change_key_case(static::getConsoleOptions()['commands'], CASE_LOWER);
 
         if ($this->params('help')) {
             return 'x';
