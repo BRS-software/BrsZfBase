@@ -14,8 +14,10 @@ use Closure;
 use BrsZfBase\Exception;
 
 /**
- * @author Tomasz Borys <t.borys@brs-software.pl>
- * @version 1.0 2014-11-13
+ * To get helper from service manager use:
+ * $sm->get('ControllerPluginManager')->get('environment');
+ *
+ * @version 1.0
  */
 class Environment extends AbstractPlugin
 {
